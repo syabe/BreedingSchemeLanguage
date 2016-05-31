@@ -1,0 +1,17 @@
+Package: BreedingSchemeLanguage
+Type: Package
+Title: Describe and simulate breeding schemes
+Version: 1.0
+Date: 2016-03-08
+Author: Shiori Yabe, Hiroyoshi Iwata, and Jean-Luc Jannink
+Maintainer: Shiori Yabe <syabe@affrc.go.jp>
+Description: Users can simulate their planned breeding schemes by using functions that imitate events in breeding.
+License: GPL-3
+Depends: R (>= 3.0.0), Rcpp (>= 0.11.0), snowfall
+Imports:
+  ggplot2,
+  rrBLUP
+LinkingTo: Rcpp
+LazyLoad: yes
+NeedsCompilation: yes
+RoxygenNote: 5.0.1
