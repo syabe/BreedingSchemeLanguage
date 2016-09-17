@@ -58,7 +58,7 @@ plotData <- function(ymax = NULL, add = F, addDataFileName = "plotData"){
     else {
         p <- p + ylim(min(data$g), ymax)
     }
-    p <- p + scale_size_manual(name = "", values = c(0.5, 3), labels = c("Each",
+    p <- p + scale_size_manual(name = "", values = c(0.2, 3), labels = c("Each",
         "Mean"))
     p <- p + labs(title = "", x = "Generation", y = "Genetic improvement")
     p <- p + guides(size = guide_legend("Lines"))
