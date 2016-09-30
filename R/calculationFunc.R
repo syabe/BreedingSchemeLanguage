@@ -8,7 +8,7 @@ calcGenotypicValue <- function(geno, mapData){
   nPop <- nrow(geno) / 2
   gv1pos <- function(geno1pos, actType, effect){
     geno1pos <- as.matrix(geno1pos, nrow = 2)
-    coef <- ifelse(actType == 0, geno1pos[1, ] + geno1pos[2, ], geno1pos[1, ] * geno1pos[2, ])
+    coef <- ifelse(actType == 0, (geno1pos[1, ] + geno1pos[2, ])/2, -(geno1pos[1, ] * geno1pos[2, ]))
     return(effect * prod(coef))
   }
   gv1ind <- function(genoVec, mapData){
