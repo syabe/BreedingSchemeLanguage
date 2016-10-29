@@ -20,6 +20,7 @@ cross <- function(nProgeny = 100, equalContribution = F, popID = NULL){
     for(i in popID){
       tf[breedingData$popID == i] <- T
     }
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
     if(equalContribution){
