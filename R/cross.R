@@ -16,10 +16,6 @@ cross <- function(nProgeny = 100, equalContribution = F, popID = NULL){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
     tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
