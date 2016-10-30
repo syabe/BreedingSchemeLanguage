@@ -11,40 +11,27 @@ predictBreedVal <- function(popID = NULL, trainingPopID = NULL){
     mapData <- data$mapData
     breedingData <- data$breedingData
     score <- data$score
-    if(is.null(popID)){
-      predictedPopID <- max(breedingData$popID)
-    }else{
-      predictedPopID <- popID
-    }
+    if (is.null(popID)) popID <- max(breedingData$popID)
     if(is.null(trainingPopID)){
       GID.train <- sort(unique(breedingData$phenoGID))
     }else{
-      tf <- rep(F, length(breedingData$GID))
-      for(i in trainingPopID){
-        tf[breedingData$popID == i] <- T
-      } # i
+      tf <- breedingData$popID %in% trainingPopID
       GID.train <- breedingData$GID[tf]
     }
     GID.not.train <- breedingData$GID[-GID.train]
     GID <- breedingData$phenoGID
     y <- breedingData$pValue
     R <- breedingData$error
-    if(max(breedingData$GID) > max(GID)){
-      no.pheno <- max(breedingData$GID) - max(GID)
-      GID <- c(GID, max(GID) + 1:no.pheno)
-      y <- c(y, rep(NA, no.pheno))
-      R <- c(R, rep(NA, no.pheno))
-    }
-    for(i in GID.not.train){
-      y[GID == i] <- NA
-    }
+    # Put a cell in y for GID that do not have a phenotype
+    GIDnoPheno <- setdiff(breedingData$GID, GID)
+    nNoPheno <- length(GIDnoPheno)
+    GID <- c(GID, GIDnoPheno)
+    y <- c(y, rep(NA, nNoPheno))
+    R <- c(R, rep(NA, nNoPheno))
+    y[GID %in% GID.not.train] <- NA
     data <- data.frame(GID = GID, y = y)
     K <- A.mat(score)
-    if(length(GID) > length(unique(GID))){
-      reduce <- T
-    }else{
-      reduce <- F
-    }
+    reduce <- (length(GID) > length(unique(GID)))
     model <- kin.blup(data = data, geno = "GID", pheno = "y", K = K, R = R, reduce = reduce)
     predict <- as.numeric(model$g)
     predGID <- rownames(K)

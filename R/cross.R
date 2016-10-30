@@ -47,9 +47,9 @@ cross <- function(nProgeny = 100, equalContribution = F, popID = NULL, popID2 = 
   }
   if(nCore > 1){
     sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID)
+    lists <<- sfLapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
     sfStop()
   }else{
-    lists <<- lapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID)
+    lists <<- lapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
   }
 }
