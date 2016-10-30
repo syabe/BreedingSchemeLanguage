@@ -120,12 +120,9 @@ randomMate <- function(popSize, geno, pos){
 #'
 #'@export
 randomMateAll <- function(popSize, geno, pos){
-  parent1 <- rep(1:(nrow(geno) / 2), popSize %/% (nrow(geno) / 2))
-  if(popSize %% (nrow(geno) / 2) != 0) parent1 <- c(parent1, 1:(popSize %% (nrow(geno) / 2)))
-  parent2 <- rep(NA, popSize)
-  for(pollen in 1:popSize){
-    parent2[pollen] <- sample((1:(nrow(geno) / 2))[-parent1[pollen]], size = 1)
-  }
+  nInd <- nrow(geno) / 2
+  parent1 <- rep(1:nInd, length.out=popSize)
+  parent2 <- sapply(parent1, function(par) sample((1:nInd)[-parent1[par]], size = 1))
   parents <- cbind(parent1, parent2)
   progenies <- makeProgenies(parents, geno, pos)
   return(list(progenies = progenies, pedigree = parents))
