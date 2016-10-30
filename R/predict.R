@@ -44,7 +44,7 @@ predictBreedVal <- function(popID = NULL, trainingPopID = NULL){
       breedingData$predGID <- c(breedingData$predGID, predGID)
       breedingData$predNo <- c(breedingData$predNo, rep(max(breedingData$predNo) + 1, length(predGID)))
     }
-    selCriterion <- list(popID = predictedPopID, criterion = "pred")
+    selCriterion <- list(popID = popID, criterion = "pred")
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
   if(nCore > 1){
