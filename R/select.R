@@ -16,10 +16,7 @@ select <- function(nSelect = 40, popID = NULL, random = F){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     selectedGID <- sample(GID.now, nSelect)
     popID.new <- max(breedingData$popID) + 1
@@ -27,7 +24,7 @@ select <- function(nSelect = 40, popID = NULL, random = F){
       breedingData$popID[breedingData$GID == i] <- popID.new
     }
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
+  } #END select.func.random
   select.func <- function(data, nSelect, popID){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -37,10 +34,7 @@ select <- function(nSelect = 40, popID = NULL, random = F){
     if(is.null(popID)){
       popID <- selCriterion$popID
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    } # i
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     candValue <- NULL
     if(substr(criterion, 1, 5) == "pheno"){
@@ -64,7 +58,7 @@ select <- function(nSelect = 40, popID = NULL, random = F){
       breedingData$popID[breedingData$GID == i] <- popID.new
     }
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
+  } #END select.func
   if(nCore > 1){
     if(random){
       sfInit(parallel=T, cpus=nCore)
