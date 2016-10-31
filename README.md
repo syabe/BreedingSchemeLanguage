@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+
 # BreedingSchemeLanguage
 R/package "BreedingSchemeLanguage"
->>>>>>> templ
+
+Please read 'Manual' PDF file.
