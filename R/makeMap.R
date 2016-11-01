@@ -1,3 +1,16 @@
+#' create map and QTL effects
+#'
+#' @param map map information (Chromosome and Position)
+#' @param nLoci the number of markers and QTL
+#' @param nMarkers the number of markers, which is used especially for genomic selection
+#' @param nQTL the number of QTLs controlling the target trait
+#' @param propDomi the probability of dominant QTL among the all QTL
+#' @param interactionMean the expected number of epistatic loci for each effect
+#' @param varEffects variance of QTL effects
+#'
+#' @return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+#'
+#' @export
 makeMap <- function(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1){
   nEffectiveLoci <- 1 + rpois(n = nQTL, lambda = interactionMean)
   posEffectiveLoci <- sample(1:nLoci, sum(nEffectiveLoci))
