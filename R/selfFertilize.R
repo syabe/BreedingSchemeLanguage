@@ -1,6 +1,6 @@
 #'Self-fertilize
 #'
-#'@param nProgenyPerInd the number of progeny per maternal parent
+#'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
 #'@return sequence information of progenies and the all information created before (list)
@@ -15,16 +15,10 @@ selfFertilize <- function(nProgenyPerInd = 1, popID = NULL){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
+    tf <- breedingData$popID %n% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
-    geno.progeny <- NULL
-    for(i in 1:nProgenyPerInd){
-      geno.progeny <- rbind(geno.progeny, selfing(geno = geno.now, pos = mapData$map$Pos)$progenies)
-    }
+    geno.progeny <- makeSelfs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
     gValue <- calcGenotypicValue(geno = geno.progeny, mapData = mapData)
     GID.progeny <- max(breedingData$GID) + 1:(nrow(geno.progeny) / 2)
     popID.progeny <- rep(max(breedingData$popID) + 1, nrow(geno.progeny) / 2)

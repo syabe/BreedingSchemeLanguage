@@ -1,6 +1,6 @@
 #'Doubled haploids
 #'
-#'@param nProgeny the number of progenies
+#'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
 #'
 #'@return sequence information of progenies and the all information created before (list)
@@ -15,13 +15,10 @@ doubledHaploid <- function(nProgeny = 100, popID = NULL){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
+    tf <- breedingData$popID %n% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
-    geno.progeny <- DHs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
+    geno.progeny <- makeDHs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
     gValue <- calcGenotypicValue(geno = geno.progeny, mapData = mapData)
     GID.progeny <- max(breedingData$GID) + 1:nProgeny
     popID.progeny <- rep(max(breedingData$popID) + 1, nProgeny)

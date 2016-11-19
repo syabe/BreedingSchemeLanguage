@@ -16,7 +16,7 @@
 #'
 #'@export
 defineSpecies <- function(loadData = NULL, saveDataFileName = "previousData", nSim = 1, nCore = 1, nChr = 7, lengthChr = 150, effPopSize = 100, nMarkers = 1000, nQTL = 50, propDomi = 0, nEpiLoci = 0){
-  defineSpecies.func <- function(data, nChr, lengthChr, effPopSize, nMarkers, nQTL, propDomi, nEpiLoci){
+  defineSpecies.func <- function(dummy, nChr, lengthChr, effPopSize, nMarkers, nQTL, propDomi, nEpiLoci){
     seed <- round(runif(1, 0, 1e9))
     nLoci <- nMarkers + nQTL * (nEpiLoci + 1) * 2
     minMAF <- 0.01
@@ -30,13 +30,10 @@ defineSpecies <- function(loadData = NULL, saveDataFileName = "previousData", nS
     markers[,ancestralState == 1] <- 1 - markers[,ancestralState == 1]
     mapData <- makeMap(map = map, nLoci = nLoci, nMarkers = nMarkers, nQTL = nQTL, propDomi = propDomi, interactionMean = nEpiLoci)
     return(list(mapData = mapData, founderHaps = markers))
-  }
+  }#END defineSpecies.func
+  
   if(is.null(loadData)){
-    lists0 <- list()
-    for(sim in 1:nSim){
-      lists0[[sim]] <- 0
-    }
-    lists <<- lapply(lists0, defineSpecies.func, nChr = nChr, lengthChr = lengthChr, effPopSize = effPopSize, nMarkers = nMarkers, nQTL = nQTL, propDomi = propDomi, nEpiLoci = nEpiLoci)
+    lists <<- sapply(1:nSim, defineSpecies.func, nChr = nChr, lengthChr = lengthChr, effPopSize = effPopSize, nMarkers = nMarkers, nQTL = nQTL, propDomi = propDomi, nEpiLoci = nEpiLoci, simplify=FALSE)
     nSim <<- nSim
     nCore <<- nCore
     save(lists, nSim, nCore, file = paste(saveDataFileName, ".RData", sep = ""))

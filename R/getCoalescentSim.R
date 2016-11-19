@@ -72,7 +72,7 @@ map <- map[maf >= minMAF,]
 maf <- maf[maf >= minMAF]
 if (length(nMrkOrMut) == 1){
   if (ncol(markers) < nMrkOrMut){
-    print("Warning! Settings such that fewer markers simulated than demanded")
+    print("Warning! Settings such that fewer markers simulated than needed")
     print(paste("There were", ncol(markers), "markers"))
   } else{
     keepMrk <- sort(sample(ncol(markers), nMrkOrMut))
@@ -82,6 +82,7 @@ if (length(nMrkOrMut) == 1){
   }
 }
 nMrk <- ncol(markers)
+# Ensure that no two markers have _exactly_ the same position
 for (chr in 1:nChr){
   mrkThisChr <- map[,"Chr"] == chr
   uniqPos <- unique(map[mrkThisChr,"Pos"])
