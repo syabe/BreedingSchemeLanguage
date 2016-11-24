@@ -7,7 +7,7 @@
 doubledHaploid(nProgeny = 100, popID = NULL)
 }
 \arguments{
-\item{nProgeny}{the number of progenies}
+\item{nProgeny}{the number of progeny}
 
 \item{popID}{population ID to be devided by meiosis and doubled (default: the latest population)}
 }

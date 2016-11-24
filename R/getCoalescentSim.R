@@ -12,7 +12,6 @@
 #'@param seed -seed (GENOME)
 #'@param tree -tree (GENOME)
 #'
-#'@export
 getCoalescentSim <- function(nPopsSamples=NULL, effPopSize=100, nChr=7, nPiecesPerChr=15000, recBTpieces=0.0001, nMrkOrMut=100, minMAF=0.01, seed=as.integer(Sys.time()), tree=0){
 
 systemCall <- rep(NA, 11)

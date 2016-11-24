@@ -3,7 +3,6 @@
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 makeGamete <- function(geno, pos){
   diff <- diff(pos)
   rec <- (1 - exp(-2 * diff / 100)) / 2
@@ -24,7 +23,6 @@ makeGamete <- function(geno, pos){
 #'@param genoMat matrix of maternal haplotype
 #'@param pos position of markers/QTLs
 #'
-#'@export
 makeProgeny <- function(genoMat, genoPat, pos){
   progeny <- rbind(makeGamete(genoMat, pos), makeGamete(genoPat, pos))
   return(progeny)
@@ -36,7 +34,6 @@ makeProgeny <- function(genoMat, genoPat, pos){
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 makeProgenies <- function(parents, geno, pos){
   progenies <- matrix(NA, 2 * nrow(parents), ncol(geno))
   for(par in 1:nrow(parents)){
@@ -52,35 +49,33 @@ makeProgenies <- function(parents, geno, pos){
 #'@param genoParent matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 DH <- function(genoParent, pos){
   gamete <- makeGamete(genoParent, pos)
   progeny <- rbind(gamete, gamete)
   return(progeny)
 }
 
-#'DHs
+#'makeDHs
 #'
 #'@param popSize population size
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 makeDHs <- function(popSize, geno, pos){
   nPar <- nrow(geno) / 2
   nRep <- popSize %/% nPar
   rem <- popSize %% nPar
   parent <- rep(1:nPar, nRep)
   parent <- c(parent, sample(1:nPar, rem))
-  progenies <- t(sapply(parent, function(par) DH(geno[c(parent[par] * 2 - 1, parent[par] * 2), ], pos)))  return(list(progenies = progenies, pedigree = cbind(parent, parent)))
+  progenies <- t(sapply(parent, function(par) DH(geno[c(parent[par] * 2 - 1, parent[par] * 2), ], pos)))
+  return(list(progenies = progenies, pedigree = cbind(parent, parent)))
 }
 
-#'selfing
+#'makeSelfs
 #'
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 makeSelfs <- function(popSize, geno, pos){
   nPar <- nrow(geno) / 2
   nRep <- popSize %/% nPar
@@ -97,7 +92,6 @@ makeSelfs <- function(popSize, geno, pos){
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 randomMate <- function(popSize, geno, pos){
   parents <- t(sapply(rep(nrow(geno) / 2, popSize), sample, size=2))
   progenies <- makeProgenies(parents, geno, pos)
@@ -110,7 +104,6 @@ randomMate <- function(popSize, geno, pos){
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-#'@export
 randomMateAll <- function(popSize, geno, pos){
   nInd <- nrow(geno) / 2
   parent1 <- rep(1:nInd, length.out=popSize)

@@ -3,7 +3,6 @@
 #'@param geno matrix of haplotypes
 #'@param mapData map data
 #'
-#'@export
 calcGenotypicValue <- function(geno, mapData){
   nPop <- nrow(geno) / 2
   gv1pos <- function(geno1pos, actType, effect){
@@ -31,7 +30,6 @@ calcGenotypicValue <- function(geno, mapData){
 #'@param errorVar error variance
 #'@param H2 a broad heritability
 #'
-#'@export
 calcPhenotypicValue <- function(gv, errorVar = NULL, H2 = NULL){
   if((!is.null(errorVar) & !is.null(H2)) | (is.null(errorVar) & is.null(H2))){
     stop("I cannot make phenotypic value!")
