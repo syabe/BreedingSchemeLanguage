@@ -4,7 +4,7 @@
 \alias{doubledHaploid}
 \title{Doubled haploids}
 \usage{
-doubledHaploid(nProgeny = 100, popID = NULL)
+doubledHaploid(simEnv, nProgeny = 100, popID = NULL)
 }
 \arguments{
 \item{nProgeny}{the number of progeny}

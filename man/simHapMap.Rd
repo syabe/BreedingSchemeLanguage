@@ -4,8 +4,8 @@
 \alias{simHapMap}
 \title{Generate a data.frame with a hapmap data in it to test phasedHapMap2mat}
 \usage{
-simHapMap(nInd = 20, nMrk = 50, nChr = 7, lenChr = 150,
-  maf = runif(nMrk))
+simHapMap(nInd = 200, nMrk = 1050, nChr = 7, lenChr = 150,
+  maf = runif(nMrk), nCharCode = 2)
 }
 \arguments{
 \item{nInd}{The number of individuals with marker data}
@@ -17,6 +17,8 @@ simHapMap(nInd = 20, nMrk = 50, nChr = 7, lenChr = 150,
 \item{lenChr}{The length of the chromosomes (all equal) in cM}
 
 \item{maf}{The desired minor allele frequency of each marker}
+
+\item{nCharCode}{Whether the genotype codes should be one or two characters}
 }
 \value{
 A data.frame with hapmap data in it

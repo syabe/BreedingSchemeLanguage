@@ -6,7 +6,8 @@
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-doubledHaploid <- function(nProgeny = 100, popID = NULL){
+doubledHaploid <- function(simEnv, nProgeny = 100, popID = NULL){
+  parent.env(simEnv) <- environment()
   doubledHaploid.func <- function(data, nProgeny, popID){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -29,11 +30,13 @@ doubledHaploid <- function(nProgeny = 100, popID = NULL){
     breedingData$gValue <- c(breedingData$gValue, gValue)
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
+      sfStop()
+    }else{
+      sims <- lapply(sims, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
+    }
+  })
 }

@@ -1,17 +1,3 @@
-#'Import phased data from hapmap format file defining founder haplotypes
-#'
-#'@param fileName if null read a file called "founderHaplotypes.hmp" (default) else read
-#'the specified file.
-#'
-#'@return NULL
-#'
-#'@export
-#'
-importData <- function(fileName = "founderHaplotypes.hmp"){
-  hm <- read.table(fileName)
-  BreedingSchemeLanguage::importedData <- phasedHapMap2mat(hm)
-}
-
 #' Transform a data.frame with a hapmap data in it into a marker dosage and map list
 #' 
 #' @param hm The data.frame
@@ -20,8 +6,6 @@ importData <- function(fileName = "founderHaplotypes.hmp"){
 #' 
 #' @return list with markers and map objects
 #' 
-# This function will not allow missing data so anything missing will be
-# set to the major allele
 # Assume marker names in column 1 and genotypes (e.g. "A/G") in column 2
 # Assume chromosome and position are in columns 3 and 4 of the hapmap
 # and that position is in cM: WARNING cM is probably not standard hapmap
@@ -51,7 +35,7 @@ phasedHapMap2mat <- function(hm, firstCol=12, lastCol=ncol(hm)){
       numCodes <- c(1, 0, rep(NA, length(missings)))
       gam1 <- sapply(substr(vec, 1, 1), function(code) numCodes[code == codes])
       gam2 <- sapply(substr(vec, 2, 2), function(code) numCodes[code == codes])
-      return(cbind(gam1, gam2))
+      return(c(gam1, gam2))
     }
   }
   res <- apply(hm, 1, hapMap2num) 
@@ -71,7 +55,7 @@ phasedHapMap2mat <- function(hm, firstCol=12, lastCol=ncol(hm)){
 #' 
 # Quick function to create a HapMap data.frame for testing
 #
-simHapMap <- function(nInd=20, nMrk=50, nChr=7, lenChr=150, maf=runif(nMrk), nCharCode=2){
+simHapMap <- function(nInd=200, nMrk=1050, nChr=7, lenChr=150, maf=runif(nMrk), nCharCode=2){
   nucl <- c("A", "C", "G", "T")
   gt <- replicate(nMrk, sample(4, 2))
   alleles <- paste(nucl[gt[1,]], nucl[gt[2,]], sep="/")

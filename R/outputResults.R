@@ -7,15 +7,15 @@
 #' @return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
 #'
 #' @export
-outputResults <- function(summarize = T, directory = NULL, saveDataFileName = "BSLoutput"){
+outputResults <- function(simEnv, summarize = T, directory = NULL, saveDataFileName = "BSLoutput"){
   if(summarize){
-    breedingData <- lists[[1]]$breedingData
+    breedingData <- simEnv$sims[[1]]$breedingData
     popID <- sort(unique(breedingData$popIDsel))
     phenotype(popID = 0:max(breedingData$popID))
-    muSim <- matrix(NA, length(popID), nSim)
-    varSim <- matrix(NA, length(popID), nSim)
-    for(sim in 1:nSim){
-      breedingData <- lists[[sim]]$breedingData
+    muSim <- matrix(NA, length(popID), simEnv$nSim)
+    varSim <- matrix(NA, length(popID), simEnv$nSim)
+    for(sim in 1:simEnv$nSim){
+      breedingData <- simEnv$sims[[sim]]$breedingData
       mu <- rep(NA, length(popID))
       var <- rep(NA, length(popID))
       for(i in 1:length(popID)){
@@ -32,9 +32,9 @@ outputResults <- function(summarize = T, directory = NULL, saveDataFileName = "B
     }
     dataSim <- cbind(muSim, varSim)
     rownames(dataSim) <- popID
-    colnames(dataSim) <- c(paste("mu", 1:nSim, sep = ""), paste("var", 1:nSim, sep = ""))
+    colnames(dataSim) <- c(paste("mu", 1:simEnv$nSim, sep = ""), paste("var", 1:simEnv$nSim, sep = ""))
   }else{
-    dataSim <- lists
+    dataSim <- simEnv$sims
   }
   BSLoutput <- dataSim
   if(is.null(directory)){

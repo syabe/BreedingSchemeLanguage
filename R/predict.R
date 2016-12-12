@@ -6,7 +6,8 @@
 #'@return predicted values and the all information created before (list)
 #'
 #'@export
-predictBreedVal <- function(popID = NULL, trainingPopID = NULL){
+predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
+  parent.env(simEnv) <- environment()
   predict.func <- function(data, popID, trainingPopID){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -47,11 +48,13 @@ predictBreedVal <- function(popID = NULL, trainingPopID = NULL){
     selCriterion <- list(popID = popID, criterion = "pred")
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, predict.func, popID = popID, trainingPopID = trainingPopID)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, predict.func, popID = popID, trainingPopID = trainingPopID)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, predict.func, popID = popID, trainingPopID = trainingPopID)
+      sfStop()
+    }else{
+      sims <- lapply(sims, predict.func, popID = popID, trainingPopID = trainingPopID)
+    }
+  })
 }

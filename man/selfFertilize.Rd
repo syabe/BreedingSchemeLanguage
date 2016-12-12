@@ -4,7 +4,7 @@
 \alias{selfFertilize}
 \title{Self-fertilize}
 \usage{
-selfFertilize(nProgenyPerInd = 1, popID = NULL)
+selfFertilize(simEnv, nProgenyPerInd = 1, popID = NULL)
 }
 \arguments{
 \item{popID}{population ID to be self-fertilized (default: the latest population)}

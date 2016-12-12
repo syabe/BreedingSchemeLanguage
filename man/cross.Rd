@@ -4,7 +4,7 @@
 \alias{cross}
 \title{Random mate}
 \usage{
-cross(nProgeny = 100, equalContribution = F, popID = NULL,
+cross(simEnv, nProgeny = 100, equalContribution = F, popID = NULL,
   popID2 = NULL)
 }
 \arguments{

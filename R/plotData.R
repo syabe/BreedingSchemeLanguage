@@ -8,9 +8,9 @@
 #'@return A ggplot object of the simulation results
 #'
 #'@export
-plotData <- function(ymax = NULL, add = F, addDataFileName = "plotData", popIDplot = NULL){
+plotData <- function(simEnv, ymax = NULL, add = F, addDataFileName = "plotData", popIDplot = NULL){
   plotBase <- is.null(popIDplot)
-  if (plotBase) popIDplot <- sort(unique(lists[[1]]$breedingData$popIDsel))
+  if (plotBase) popIDplot <- sort(unique(simEnv$sims[[1]]$breedingData$popIDsel))
   
   getMeans <- function(sim){
     breedingData <- sim$breedingData
@@ -19,7 +19,7 @@ plotData <- function(ymax = NULL, add = F, addDataFileName = "plotData", popIDpl
     mu <- tapply(breedingData$gValue, as.factor(popID), mean)
     mu <- mu[as.character(popIDplot)]
   }
-  muSim <- t(sapply(lists, getMeans))
+  muSim <- t(sapply(simEnv$sims, getMeans))
   
   muSim <- muSim - muSim[, 1]
   g <- NULL
@@ -27,15 +27,15 @@ plotData <- function(ymax = NULL, add = F, addDataFileName = "plotData", popIDpl
   col <- NULL
   size <- NULL
   nGenPlot <- length(popIDplot)
-  for(sim in 1:nSim){
+  for(sim in 1:simEnv$nSim){
     g <- c(g, muSim[sim, ])
     group <- c(group, rep(sim, nGenPlot))
     size <- c(size, rep(1, nGenPlot))
   }
   g <- c(g, apply(muSim, 2, mean))
-  group <- c(group, rep(nSim + 1, nGenPlot))
+  group <- c(group, rep(simEnv$nSim + 1, nGenPlot))
   size <- c(size, rep(2, nGenPlot))
-  data <- data.frame(g = g, popID = rep(0:(nGenPlot - 1), nSim + 1), size = size, group = group, scheme = rep(1, length(g)))
+  data <- data.frame(g = g, popID = rep(0:(nGenPlot - 1), simEnv$nSim + 1), size = size, group = group, scheme = rep(1, length(g)))
   if (add){
     load(file = paste(addDataFileName, ".RData", sep = ""))
     data$scheme <- data$scheme + max(data.previous$scheme)

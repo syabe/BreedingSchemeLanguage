@@ -8,7 +8,8 @@
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-cross <- function(nProgeny = 100, equalContribution = F, popID = NULL, popID2 = NULL){
+cross <- function(simEnv, nProgeny = 100, equalContribution = F, popID = NULL, popID2 = NULL){
+  parent.env(simEnv) <- environment()
   cross.func <- function(data, nProgeny, equalContribution, popID, popID2){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -45,11 +46,13 @@ cross <- function(nProgeny = 100, equalContribution = F, popID = NULL, popID2 = 
     breedingData$gValue <- c(breedingData$gValue, gValue)
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
+      sfStop()
+    }else{
+      sims <- lapply(sims, cross.func, nProgeny = nProgeny, equalContribution = equalContribution, popID = popID, popID2 = popID2)
+    }
+  })
 }

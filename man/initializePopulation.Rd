@@ -4,7 +4,7 @@
 \alias{initializePopulation}
 \title{Create a founder population}
 \usage{
-initializePopulation(nPop = 100, gVariance = 1)
+initializePopulation(simEnv, nPop = 100, gVariance = 1)
 }
 \arguments{
 \item{nPop}{population size}

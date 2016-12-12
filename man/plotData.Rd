@@ -4,7 +4,7 @@
 \alias{plotData}
 \title{Plot the results}
 \usage{
-plotData(ymax = NULL, add = F, addDataFileName = "plotData",
+plotData(simEnv, ymax = NULL, add = F, addDataFileName = "plotData",
   popIDplot = NULL)
 }
 \arguments{
