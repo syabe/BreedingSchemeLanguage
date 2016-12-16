@@ -44,18 +44,18 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
   
   if(is.null(loadData)){
     if (is.null(importFounderHap)){
-    sims <- sapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci)
+    sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci)
     }else{
       foundHap <- read.table(file=paste(importFounderHap, ".hmp", sep=""))
       foundHap <- phasedHapMap2mat(foundHap)
-      sims <- sapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap)
+      sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap)
     }
     save(sims, nSim, nCore, file=paste(saveDataFileName, ".RData", sep=""))
   }else{
     load(paste(loadData, ".RData", sep=""))
   }
   # list of objects to remove before returning the environment
-  toRemove <- c(setdiff(ls(), c("nSim", "nCore")), "toRemove")
+  toRemove <- c(setdiff(ls(), c("sims", "nSim", "nCore")), "toRemove")
   rm(list=toRemove)
   return(environment())
 }
