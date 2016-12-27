@@ -17,6 +17,7 @@ select <- function(simEnv, nSelect = 40, popID = NULL, random = F){
     criterion <- selCriterion$criterion
     if(is.null(popID)){
       popID <- selCriterion$popID
+      if(is.null(popID)) popID <- 0
     }
     tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]

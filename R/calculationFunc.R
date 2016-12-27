@@ -7,7 +7,12 @@ calcGenotypicValue <- function(geno, mapData){
   nPop <- nrow(geno) / 2
   gv1pos <- function(geno1pos, actType, effect){
     geno1pos <- as.matrix(geno1pos, nrow = 2)
-    coef <- ifelse(actType == 0, (geno1pos[1, ] + geno1pos[2, ])/2, -(geno1pos[1, ] * geno1pos[2, ]))
+    if (!is.null(mapData$domModel)){ # 1 dominant over -1; degree in actType
+      mnMxGeno <- apply(geno1pos, 2, range)
+      sapply(1:length(actType), function(i) c(1-actType[i], actType[i]) %*% mnMxGeno[,i]
+    } else{ # Standard model
+      coef <- ifelse(actType == 0, (geno1pos[1, ] + geno1pos[2, ])/2, -(geno1pos[1, ] * geno1pos[2, ]))
+    }
     return(effect * prod(coef))
   }
   gv1ind <- function(genoVec, mapData){

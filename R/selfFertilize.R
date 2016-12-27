@@ -16,7 +16,7 @@ selfFertilize <- function(simEnv, nProgenyPerInd = 1, popID = NULL){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- breedingData$popID %n% popID
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
     geno.progeny <- makeSelfs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
