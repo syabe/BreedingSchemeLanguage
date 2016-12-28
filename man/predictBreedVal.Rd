@@ -4,7 +4,7 @@
 \alias{predictBreedVal}
 \title{Genomic prediction}
 \usage{
-predictBreedVal(popID = NULL, trainingPopID = NULL)
+predictBreedVal(simEnv, popID = NULL, trainingPopID = NULL)
 }
 \arguments{
 \item{popID}{population ID to be predicted (default: the latest population)}

@@ -7,28 +7,9 @@
 #'@return information of the selected individuals and the all information created before (list)
 #'
 #'@export
-select <- function(nSelect = 40, popID = NULL, random = F){
-  select.func.random <- function(data, nSelect, popID){
-    mapData <- data$mapData
-    breedingData <- data$breedingData
-    score <- data$score
-    selCriterion <- data$selCriterion
-    if(is.null(popID)){
-      popID <- max(breedingData$popID)
-    }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
-    GID.now <- breedingData$GID[tf]
-    selectedGID <- sample(GID.now, nSelect)
-    popID.new <- max(breedingData$popID) + 1
-    for(i in selectedGID){
-      breedingData$popID[breedingData$GID == i] <- popID.new
-    }
-    return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
-  select.func <- function(data, nSelect, popID){
+select <- function(simEnv, nSelect = 40, popID = NULL, random = F){
+  parent.env(simEnv) <- environment()
+  select.func <- function(data, nSelect, popID, random=FALSE){
     mapData <- data$mapData
     breedingData <- data$breedingData
     score <- data$score
@@ -36,50 +17,44 @@ select <- function(nSelect = 40, popID = NULL, random = F){
     criterion <- selCriterion$criterion
     if(is.null(popID)){
       popID <- selCriterion$popID
+      if(is.null(popID)) popID <- 0
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    } # i
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
-    candValue <- NULL
-    if(substr(criterion, 1, 5) == "pheno"){
-      for(i in GID.now){
-        error.now <- min(breedingData$error[breedingData$phenoGID == i])
-        candValue <- c(candValue, mean(breedingData$pValue[(breedingData$phenoGID == i) & (breedingData$error == error.now)]))
-      }
-    }else{
-      if(substr(criterion, 1, 4) == "pred"){
+    if (random){
+      selectedGID <- sample(GID.now, nSelect)
+    } else{
+      candValue <- NULL
+      if(substr(criterion, 1, 5) == "pheno"){
         for(i in GID.now){
-          candValue <- c(candValue, breedingData$predict[(breedingData$predGID == i) & (breedingData$predNo == max(breedingData$predNo))])
+          error.now <- min(breedingData$error[breedingData$phenoGID == i])
+          candValue <- c(candValue, mean(breedingData$pValue[(breedingData$phenoGID == i) & (breedingData$error == error.now)]))
         }
       }else{
-        stop("Please define selection criterion in correct way!")
+        if(substr(criterion, 1, 4) == "pred"){
+          for(i in GID.now){
+            candValue <- c(candValue, breedingData$predict[(breedingData$predGID == i) & (breedingData$predNo == max(breedingData$predNo))])
+          }
+        }else{
+          stop("Please define selection criterion in correct way!")
+        }
       }
-    }
-    order <- order(candValue, decreasing = T)
-    selectedGID <- GID.now[order[1:nSelect]]
+      order <- order(candValue, decreasing = T)
+      selectedGID <- GID.now[order[1:nSelect]]
+    }#END not random selection
     popID.new <- max(breedingData$popID) + 1
     for(i in selectedGID){
       breedingData$popID[breedingData$GID == i] <- popID.new
     }
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
-  if(nCore > 1){
-    if(random){
+  } #END select.func
+  with(simEnv, {
+    if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      lists <<- sfLapply(lists, select.func.random, nSelect = nSelect, popID = popID)
+      sims <- sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random)
       sfStop()
     }else{
-      sfInit(parallel=T, cpus=nCore)
-      lists <<- sfLapply(lists, select.func, nSelect = nSelect, popID = popID)
-      sfStop()
+      sims <- lapply(sims, select.func, nSelect = nSelect, popID = popID, random=random)
     }
-  }else{
-    if(random){
-      lists <<- lapply(lists, select.func.random, nSelect = nSelect, popID = popID)
-    }else{
-      lists <<- lapply(lists, select.func, nSelect = nSelect, popID = popID)
-    }
-  }
+  })
 }

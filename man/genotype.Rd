@@ -4,7 +4,7 @@
 \alias{genotype}
 \title{Genotype markers}
 \usage{
-genotype()
+genotype(simEnv)
 }
 \value{
 marker genotype and the all information created before (list)

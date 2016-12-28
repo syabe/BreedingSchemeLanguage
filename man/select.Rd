@@ -4,7 +4,7 @@
 \alias{select}
 \title{Select individuals}
 \usage{
-select(nSelect = 40, popID = NULL, random = F)
+select(simEnv, nSelect = 40, popID = NULL, random = F)
 }
 \arguments{
 \item{nSelect}{the number of selected individuals}

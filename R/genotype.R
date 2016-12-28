@@ -3,7 +3,8 @@
 #'@return marker genotype and the all information created before (list)
 #'
 #'@export
-genotype <- function(){
+genotype <- function(simEnv){
+  parent.env(simEnv) <- environment()
   genotype.func <- function(data){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -16,11 +17,13 @@ genotype <- function(){
     rownames(score) <- breedingData$GID
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, genotype.func)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, genotype.func)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, genotype.func)
+      sfStop()
+    }else{
+      sims <- lapply(sims, genotype.func)
+    }
+  })
 }

@@ -22,7 +22,7 @@ makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1)
 \item{varEffects}{variance of QTL effects}
 }
 \value{
-The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+map data including which loci are primary QTL and which are modifying loci, which have dominance effects, the effect sizes
 }
 \description{
 create map and QTL effects

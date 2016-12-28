@@ -4,7 +4,7 @@
 \alias{outputResults}
 \title{Save the results}
 \usage{
-outputResults(summarize = T, directory = NULL,
+outputResults(simEnv, summarize = T, directory = NULL,
   saveDataFileName = "BSLoutput")
 }
 \arguments{

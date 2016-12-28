@@ -1,12 +1,13 @@
 #'Self-fertilize
 #'
-#'@param nProgenyPerInd the number of progeny per maternal parent
+#'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-selfFertilize <- function(nProgenyPerInd = 1, popID = NULL){
+selfFertilize <- function(simEnv, nProgenyPerInd = 1, popID = NULL){
+  parent.env(simEnv) <- environment()
   selfFertilize.func <- function(data, nProgenyPerInd, popID){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -15,16 +16,10 @@ selfFertilize <- function(nProgenyPerInd = 1, popID = NULL){
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
-    tf <- rep(F, length(breedingData$GID))
-    for(i in popID){
-      tf[breedingData$popID == i] <- T
-    }
+    tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
-    geno.progeny <- NULL
-    for(i in 1:nProgenyPerInd){
-      geno.progeny <- rbind(geno.progeny, selfing(geno = geno.now, pos = mapData$map$Pos)$progenies)
-    }
+    geno.progeny <- makeSelfs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
     gValue <- calcGenotypicValue(geno = geno.progeny, mapData = mapData)
     GID.progeny <- max(breedingData$GID) + 1:(nrow(geno.progeny) / 2)
     popID.progeny <- rep(max(breedingData$popID) + 1, nrow(geno.progeny) / 2)
@@ -35,11 +30,13 @@ selfFertilize <- function(nProgenyPerInd = 1, popID = NULL){
     breedingData$gValue <- c(breedingData$gValue, gValue)
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, selfFertilize.func, nProgenyPerInd = nProgenyPerInd, popID = popID)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, selfFertilize.func, nProgenyPerInd = nProgenyPerInd, popID = popID)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, selfFertilize.func, nProgenyPerInd = nProgenyPerInd, popID = popID)
+      sfStop()
+    }else{
+      sims <- lapply(sims, selfFertilize.func, nProgenyPerInd = nProgenyPerInd, popID = popID)
+    }
+  })
 }

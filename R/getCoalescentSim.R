@@ -12,7 +12,6 @@
 #'@param seed -seed (GENOME)
 #'@param tree -tree (GENOME)
 #'
-#'@export
 getCoalescentSim <- function(nPopsSamples=NULL, effPopSize=100, nChr=7, nPiecesPerChr=15000, recBTpieces=0.0001, nMrkOrMut=100, minMAF=0.01, seed=as.integer(Sys.time()), tree=0){
 
 systemCall <- rep(NA, 11)
@@ -72,7 +71,7 @@ map <- map[maf >= minMAF,]
 maf <- maf[maf >= minMAF]
 if (length(nMrkOrMut) == 1){
   if (ncol(markers) < nMrkOrMut){
-    print("Warning! Settings such that fewer markers simulated than demanded")
+    print("Warning! Settings such that fewer markers simulated than needed")
     print(paste("There were", ncol(markers), "markers"))
   } else{
     keepMrk <- sort(sample(ncol(markers), nMrkOrMut))
@@ -82,6 +81,7 @@ if (length(nMrkOrMut) == 1){
   }
 }
 nMrk <- ncol(markers)
+# Ensure that no two markers have _exactly_ the same position
 for (chr in 1:nChr){
   mrkThisChr <- map[,"Chr"] == chr
   uniqPos <- unique(map[mrkThisChr,"Pos"])

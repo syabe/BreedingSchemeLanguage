@@ -5,7 +5,8 @@
 #'
 #'@return phenotypic values and the all information created before (list)
 #'@export
-phenotype <- function(errorVar = 1, popID = NULL){
+phenotype <- function(simEnv, errorVar = 1, popID = NULL){
+  parent.env(simEnv) <- environment()
   phenotype.func <- function(data, errorVar, popID){
     mapData <- data$mapData
     breedingData <- data$breedingData
@@ -32,11 +33,13 @@ phenotype <- function(errorVar = 1, popID = NULL){
     selCriterion <- list(popID = popID, criterion = "pheno")
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, phenotype.func, errorVar = errorVar, popID = popID)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, phenotype.func, errorVar = errorVar, popID = popID)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, phenotype.func, errorVar = errorVar, popID = popID)
+      sfStop()
+    }else{
+      sims <- lapply(sims, phenotype.func, errorVar = errorVar, popID = popID)
+    }
+  })
 }

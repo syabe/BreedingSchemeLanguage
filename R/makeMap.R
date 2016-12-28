@@ -8,9 +8,8 @@
 #' @param interactionMean the expected number of epistatic loci for each effect
 #' @param varEffects variance of QTL effects
 #'
-#' @return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+#' @return map data including which loci are primary QTL and which are modifying loci, which have dominance effects, the effect sizes
 #'
-#' @export
 makeMap <- function(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1){
   nEffectiveLoci <- 1 + rpois(n = nQTL, lambda = interactionMean)
   posEffectiveLoci <- sample(1:nLoci, sum(nEffectiveLoci))

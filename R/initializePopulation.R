@@ -6,7 +6,8 @@
 #'@return initial population informationand the all information created before (list)
 #'
 #'@export
-initializePopulation <- function(nPop = 100, gVariance = 1){
+initializePopulation <- function(simEnv, nPop = 100, gVariance = 1){
+  parent.env(simEnv) <- environment()
   initializePopulation.func <- function(data, nPop, gVariance){
     mapData <- data$mapData
     founderHaps <- data$founderHaps
@@ -31,11 +32,13 @@ initializePopulation <- function(nPop = 100, gVariance = 1){
     breedingData <- list(geno = geno, GID = GID, popID = popID, popIDsel = popID, gValue = gValue)
     return(list(mapData = mapData, breedingData = breedingData, score = NULL, selCriterion = NULL))
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, initializePopulation.func, nPop = nPop, gVariance = gVariance)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, initializePopulation.func, nPop = nPop, gVariance = gVariance)
-  }
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, initializePopulation.func, nPop = nPop, gVariance = gVariance)
+      sfStop()
+    }else{
+      sims <- lapply(sims, initializePopulation.func, nPop = nPop, gVariance = gVariance)
+    }
+  })
 }
