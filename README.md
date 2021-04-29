@@ -2,9 +2,6 @@
 # BreedingSchemeLanguage
 R/package "BreedingSchemeLanguage"
 
-This package is available on CRAN.  To install, please use
-"install.packages(BreedingSchemeLanguage)"
-
 The latest development version of the package is at
 https://github.com/jeanlucj/BreedingSchemeLanguage
 
